@@ -1,0 +1,136 @@
+{
+	"info": {
+		"_postman_id": "cc5a242f-1f68-4174-b53d-b8777434d1a5",
+		"name": "API Comuni italiani",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Cities",
+			"item": [
+				{
+					"name": "P: List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/cities?pageSize=10&currentPage=0&name",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "The number of elements [Default 10]"
+								},
+								{
+									"key": "currentPage",
+									"value": "0",
+									"description": "The number of page to show [Default 0]"
+								},
+								{
+									"key": "name",
+									"value": null,
+									"description": "The string that looks like the city name [Optional]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "P: FindById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/cities/1",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"cities",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IsAlive",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUri}}",
+					"host": [
+						"{{baseUri}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUri",
+			"value": "http://localhost:8000/"
+		}
+	]
+}
