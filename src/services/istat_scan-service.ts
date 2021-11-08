@@ -1,5 +1,5 @@
 import prisma from "../helpers/prisma";
-import {IstatScan, ScanStatus, Prisma} from "@prisma/client";
+import {IstatScan, Prisma, ScanStatus} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
 
 export default class IstatScanService {
@@ -15,7 +15,10 @@ export default class IstatScanService {
         return prisma.istatScan.findMany({
             skip: pageSize * currentPage,
             take: pageSize,
-            where,
+            where: {
+                deletedAt: null,
+                ...where
+            },
             orderBy: {
                 endAt: 'desc'
             }
@@ -27,7 +30,12 @@ export default class IstatScanService {
      * @param where query conditions
      */
     static async count(where?: Prisma.IstatScanWhereInput): Promise<number> {
-        return prisma.istatScan.count({where});
+        return prisma.istatScan.count({
+            where: {
+                deletedAt: null,
+                ...where
+            }
+        });
     }
 
     /**
@@ -37,7 +45,7 @@ export default class IstatScanService {
      */
     static async find(id: number, where?: Prisma.IstatScanWhereInput): Promise<IstatScan> {
         const istatScan = await prisma.istatScan.findFirst({
-            where: {id, ...where}
+            where: {id, deletedAt: null, ...where},
         });
 
         if (!istatScan) {
@@ -53,7 +61,8 @@ export default class IstatScanService {
     static async getLast(): Promise<IstatScan> {
         const istatScan = await prisma.istatScan.findFirst({
             where: {
-                status: ScanStatus.COMPLETED
+                status: ScanStatus.COMPLETED,
+                deletedAt: null
             },
             orderBy: {
                 endAt: 'desc'

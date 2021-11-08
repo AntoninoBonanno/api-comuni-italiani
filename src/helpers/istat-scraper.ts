@@ -5,6 +5,10 @@ import fs from "fs";
 import * as XLSX from "xlsx";
 import IstatScanService from "../services/istat_scan-service";
 import {ScanStatus} from "@prisma/client";
+import AreaService from "../services/area-service";
+import RegionService from "../services/region-service";
+import ProvinceService from "../services/province-service";
+import CityService from "../services/city-service";
 import Logger from "./logger";
 
 export default class IstatScraper {
@@ -29,55 +33,80 @@ export default class IstatScraper {
         const isUpdated = lastScans.some(lastScan =>
             lastScan.publishDate === availableScanDate && (lastScan.status === ScanStatus.COMPLETED || lastScan.status === ScanStatus.PROGRESS)
         );
-        if (isUpdated) {
-            Logger.info('No updates available');
-            return;
-        }
+        // if (isUpdated) {
+        //     Logger.info('No updates available');
+        //     return;
+        // }
 
-        const savePath = `${environment.storagePath}/${availableScanDate}.xls`;
-
-        const updatedItems = 0;
+        const savePath = `${environment.storagePath}/${(new Date()).toLocaleTimeString()}.xls`;
         const istatScan = await IstatScanService.create({publishDate: availableScanDate});
         try {
             const rows = await IstatScraper.getFileRows(savePath);
             rows.shift(); // remove header row
 
             const newValues = {
-                areas: new Map<string, string>(),
-                regions: new Map<string, string>(),
-                provinces: new Map<string, string>(),
-                cities: new Map<string, string>(),
+                areas: new Map<string, number>(),
+                regions: new Map<string, number>(),
+                provinces: new Map<string, number>(),
+                cities: new Map<string, number>(),
             }
 
-            rows.forEach((row, index) => {
-                const element = {
-                    regionCode: row.A,
-                    regionName: row.K,
-                    provinceCode: row.C,
-                    provinceName: row.L,
-                    provinceAbbreviation: row.O,
-                    cityCode: row.E,
-                    cityName: row.F,
-                    cityItalianName: row.G,
-                    cityOtherLanguageName: row.H,
-                    cityCadastralCode: row.T,
-                    areaCode: row.I,
-                    areaName: row.J,
+            for (const row of rows) {
+                const area = {
+                    code: row.I.trim(),
+                    name: row.J.trim()
+                };
+                if (!newValues.areas.has(area.code)) {
+                    newValues.areas.set(area.code, (await AreaService.upsert(area)).id);
                 }
-                console.log(row);
-            });
+
+                const region = {
+                    areaId: newValues.areas.get(area.code)!,
+                    code: row.A.trim(),
+                    name: row.K.trim()
+                };
+                if (!newValues.regions.has(region.code)) {
+                    newValues.regions.set(region.code, (await RegionService.upsert(region)).id);
+                }
+
+                const province = {
+                    regionId: newValues.regions.get(region.code)!,
+                    code: row.C.trim(),
+                    name: row.L.trim(),
+                    abbreviation: row.O.trim()
+                }
+                if (!newValues.provinces.has(province.code)) {
+                    newValues.provinces.set(province.code, (await ProvinceService.upsert(province)).id);
+                }
+
+                const city = {
+                    provinceId: newValues.provinces.get(province.code)!,
+                    code: row.E.trim(),
+                    name: row.F.trim(),
+                    italianName: row.G.trim(),
+                    otherLanguageName: row.H?.trim(),
+                    cadastralCode: row.T.trim(),
+                }
+                if (!newValues.cities.has(city.code)) {
+                    newValues.cities.set(city.code, (await CityService.upsert(city)).id);
+                }
+            }
+
+            // Delete
+            await CityService.deleteNotIn([...newValues.cities.values()]);
+            await ProvinceService.deleteNotIn([...newValues.provinces.values()]);
+            await RegionService.deleteNotIn([...newValues.regions.values()]);
+            await AreaService.deleteNotIn([...newValues.areas.values()]);
 
             await IstatScanService.update(istatScan.id, {
                 status: ScanStatus.COMPLETED,
-                endAt: new Date(),
-                updatedItems
+                endAt: new Date()
             });
         } catch (e) {
             await IstatScanService.update(istatScan.id, {
                 status: ScanStatus.ERROR,
                 statusMessage: e.message,
-                endAt: new Date(),
-                updatedItems
+                endAt: new Date()
             });
         } finally {
             fs.unlinkSync(savePath);
