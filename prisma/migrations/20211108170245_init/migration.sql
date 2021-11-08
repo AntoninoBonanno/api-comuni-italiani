@@ -1,4 +1,17 @@
 -- CreateTable
+CREATE TABLE `istat_scans` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `status` ENUM('PROGRESS', 'COMPLETED', 'ERROR') NOT NULL DEFAULT 'PROGRESS',
+    `publishDate` VARCHAR(191) NOT NULL,
+    `updatedItems` INTEGER NOT NULL DEFAULT 0,
+    `statusMessage` VARCHAR(191) NULL,
+    `startAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `endAt` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `areas` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `code` VARCHAR(191) NOT NULL,

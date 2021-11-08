@@ -1,5 +1,5 @@
 # API Comuni italiani
-Node.js server based on the Express framework and on the MySQL database that returns the list of Italian regions, provinces and municipalities
+Node.js server based on the Express framework and on the MySQL database that returns the list of Italian regions, provinces and cities
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C46QJ0M)
 
@@ -13,10 +13,10 @@ Project structure based on [Express Startup Project](https://github.com/Antonino
 4. Run `npm start` or `npm run dev` command to run local server (it restarts each time the code is changed)
 
 NOTE:
-- import the file `API Comuni italiani.postman_collection.json` to Postman to test the API
+- import the file `docs/API Comuni italiani.postman_collection.json` to Postman to test the API
 
 ### TODO
-- [ ] Create script to populate database from [ISTAT permlink](https://www.istat.it/it/archivio/6789)
+- [ ] Create script to populate database from [ISTAT Permalink](https://www.istat.it/it/archivio/6789)
 - [ ] Update APIs
 - [ ] Add dockerfile
 

@@ -7,6 +7,25 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ScanStatus {
+  PROGRESS
+  COMPLETED
+  ERROR
+}
+
+model IstatScan {
+  id            Int        @id @default(autoincrement())
+  status        ScanStatus @default(PROGRESS)
+  publishDate   String
+  updatedItems  Int        @default(0)
+  statusMessage String?
+
+  startAt DateTime @default(now())
+  endAt   DateTime?
+
+  @@map("istat_scans")
+}
+
 model Area {
   id        Int      @id @default(autoincrement())
   code      String
