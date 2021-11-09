@@ -6,6 +6,7 @@ import express, {Application} from 'express';
 import rootRouter from "./routes/root-router";
 import errorMiddleware from "./middlewares/error-middleware";
 import morganMiddleware from "./middlewares/morgan-middleware";
+import IstatScraper from "./helpers/istat-scraper";
 
 const app: Application = express();
 
@@ -29,4 +30,5 @@ process.on('unhandledRejection', (error: Error) => { // Unhandled error handler
 /** Listen on provided port, on all network interfaces. **/
 app.listen(environment.port, async (): Promise<void> => {
     Logger.info(`⚡ ${environment.appName} Server Running here -> http://localhost:${environment.port}`);
+    IstatScraper.initCronJob();
 });

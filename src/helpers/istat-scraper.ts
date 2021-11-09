@@ -1,18 +1,34 @@
-import axios from "axios";
-import environment from "../environment";
 import fs from "fs";
+import axios from "axios";
+import {CronJob} from "cron";
+import Logger from "./logger";
 import * as XLSX from "xlsx";
-import IstatScanService from "../services/istat_scan-service";
+import environment from "../environment";
 import {ScanStatus} from "@prisma/client";
 import AreaService from "../services/area-service";
 import RegionService from "../services/region-service";
 import ProvinceService from "../services/province-service";
 import CityService from "../services/city-service";
+import IstatScanService from "../services/istat_scan-service";
 import IIstatFile, {IIstatDatabase} from "../interfaces/istat-file";
 import {IUpdateInfo} from "../interfaces/info-message";
 import {IAreaUpsert, ICityUpsert, IProvinceUpsert, IRegionUpsert} from "../interfaces/prisma-upserts";
 
 export default class IstatScraper {
+    private static job: CronJob | undefined;
+
+    /**
+     * Add cronjob, started every first day of month at 10:00
+     */
+    static initCronJob(): void {
+        IstatScraper.job = new CronJob(`0 10 1 */${environment.istatScanMonthlyPeriod} *`, () => {
+            Logger.info('[CronJob] Start Istat scan');
+            IstatScraper.startScan().then(_ => {
+                Logger.info('[CronJob] End Istat scan');
+            });
+        }, null, true, environment.timezone);
+        IstatScraper.startScan(false).then();
+    }
 
     /**
      * Check if there are any updates, or the database is already up to date
@@ -27,7 +43,7 @@ export default class IstatScraper {
             status: {
                 in: [ScanStatus.COMPLETED, ScanStatus.PROGRESS]
             }
-        });
+        }).catch(_ => []);
         const lastScan = lastScans[0];
 
         const isUpdated = lastScans.some(lastScan => lastScan.databaseName === istatFile!.databaseName);
@@ -35,24 +51,30 @@ export default class IstatScraper {
             availableDatabase: istatFile.databaseName,
             currentDatabase: isUpdated ? istatFile.databaseName : (lastScan ? lastScan.databaseName : 'None'),
             lastCheck: lastScan ? (lastScan.status === ScanStatus.PROGRESS ? 'In progress' : lastScan.startAt.toISOString()) : 'Never',
+            nextCheck: IstatScraper.job ? IstatScraper.job.nextDates().toISOString() : 'CronJob unset',
             isUpdated
         };
     }
 
     /**
      * Update the database from the ISTAT permalink
+     * @return success true if scan end with success, else error message
      */
-    static async startScan(): Promise<void> {
+    static async startScan(saveAttempt: boolean = true): Promise<void> {
         const istatFile = await IstatScraper.getIstatFile(),
             updateInfo = await IstatScraper.checkUpToDate(istatFile);
 
         if (updateInfo.isUpdated) {
-            await IstatScanService.create({
-                status: ScanStatus.COMPLETED,
-                databaseName: istatFile.databaseName,
-                statusMessage: 'No updates available',
-                endAt: new Date()
-            });
+            if (saveAttempt) {
+                await IstatScanService.create({
+                    status: ScanStatus.COMPLETED,
+                    databaseName: istatFile.databaseName,
+                    statusMessage: 'No updates available',
+                    endAt: new Date()
+                });
+            } else {
+                Logger.info('[IstatScraper] No updates available');
+            }
             IstatScraper.deleteIstatFile(istatFile);
             return;
         }
@@ -131,6 +153,7 @@ export default class IstatScraper {
                 statusMessage: e.message,
                 endAt: new Date()
             });
+            Logger.error(`[IstatScraper] Error updating database: ${e.stack}`);
         } finally {
             IstatScraper.deleteIstatFile(istatFile);
         }

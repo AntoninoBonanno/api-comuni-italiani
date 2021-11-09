@@ -6,5 +6,6 @@ export interface IUpdateInfo {
     availableDatabase: string,
     currentDatabase: string,
     lastCheck: string,
+    nextCheck: string,
     isUpdated: boolean,
 }
