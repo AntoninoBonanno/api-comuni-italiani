@@ -16,12 +16,11 @@ enum ScanStatus {
 model IstatScan {
   id            Int        @id @default(autoincrement())
   status        ScanStatus @default(PROGRESS)
-  publishDate   String
+  databaseName  String
   statusMessage String?
-
-  startAt   DateTime  @default(now())
-  endAt     DateTime?
-  deletedAt DateTime?
+  startAt       DateTime   @default(now())
+  endAt         DateTime?
+  deletedAt     DateTime?
 
   @@map("istat_scans")
 }
@@ -59,8 +58,8 @@ model Region {
 model Province {
   id           Int       @id @default(autoincrement())
   regionId     Int
-  code         String    @unique
-  name         String    @unique
+  code         String
+  name         String
   abbreviation String
   createdAt    DateTime  @default(now())
   updatedAt    DateTime  @updatedAt

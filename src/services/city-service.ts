@@ -1,6 +1,7 @@
 import prisma from "../helpers/prisma";
 import {City, Prisma} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
+import {ICityUpsert} from "../interfaces/prisma-upserts";
 
 export default class CityService {
 
@@ -35,7 +36,7 @@ export default class CityService {
                 ...where
             },
             orderBy: {
-                createdAt: 'desc'
+                name: 'asc'
             }
         });
     }
@@ -74,18 +75,16 @@ export default class CityService {
     /**
      * Create or update element
      */
-    static async upsert(data: { provinceId: number, code: string, name: string, italianName: string, otherLanguageName?: string, cadastralCode: string }): Promise<City> {
+    static async upsert(data: ICityUpsert): Promise<City> {
+        const {provinceId, ...city} = data;
         const upsert = {
-            code: data.code,
-            name: data.name,
-            italianName: data.italianName,
-            otherLanguageName: data.otherLanguageName,
-            cadastralCode: data.cadastralCode,
+            ...city,
+            deletedAt: null,
             province: {
                 connect: {
-                    id: data.provinceId
+                    id: provinceId
                 }
-            }, deletedAt: null
+            }
         };
         return prisma.city.upsert({
             where: {

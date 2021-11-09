@@ -1,6 +1,7 @@
 import prisma from "../helpers/prisma";
 import {Area, Prisma} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
+import {IAreaUpsert} from "../interfaces/prisma-upserts";
 
 export default class AreaService {
 
@@ -58,7 +59,7 @@ export default class AreaService {
     /**
      * Create or update element
      */
-    static async upsert(data: Prisma.AreaCreateInput): Promise<Area> {
+    static async upsert(data: IAreaUpsert): Promise<Area> {
         return prisma.area.upsert({
             where: {
                 code_name: data

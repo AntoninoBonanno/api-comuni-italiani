@@ -1,36 +1,10 @@
 import {Request, Response} from "express";
-import environment from "../environment";
 import IstatScanService from "../services/istat_scan-service";
 import {matchedData} from "express-validator";
 import {IstatScan} from "@prisma/client";
 import IPaginatedList from "../interfaces/paginated-list";
-import IstatScraper from "../helpers/istat-scraper";
-import IAliveMessage from "../interfaces/alive-message";
 
 export default class IstatScanController {
-
-    /**
-     * Check if the ISTAT archive has updates
-     * @param req the request
-     * @param res the response as a ICheckUpdateMessage
-     */
-    static async checkUpdate(req: Request, res: Response): Promise<void> {
-        const message: IAliveMessage = {
-            message: `${environment.appName} is alive!`,
-            availableScanDate: await IstatScraper.getAvailableScanDate(),
-            currentScanDate: 'none',
-            updateAvailable: true
-        }
-
-        const lastScan = await IstatScanService.getLast().catch(_ => undefined);
-        if (lastScan) {
-            message.currentScanDate = lastScan.publishDate;
-            message.updateAvailable = message.availableScanDate !== lastScan.publishDate;
-        }
-
-        IstatScraper.startScan().then();
-        res.send(message);
-    }
 
     /**
      * Return the list of IstatScans
@@ -44,7 +18,7 @@ export default class IstatScanController {
 
         const paginatedList: IPaginatedList<IstatScan> = {
             pageSize, currentPage,
-            totalPages: await IstatScanService.count(),
+            totalPages: Math.ceil(await IstatScanService.count() / pageSize),
             contentList: await IstatScanService.list(currentPage, pageSize)
         };
 
@@ -60,5 +34,4 @@ export default class IstatScanController {
         const {id} = req.params;
         res.send(await IstatScanService.find(Number(id)));
     }
-
 }

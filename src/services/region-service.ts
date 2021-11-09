@@ -1,6 +1,7 @@
 import prisma from "../helpers/prisma";
 import {Prisma, Region} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
+import {IRegionUpsert} from "../interfaces/prisma-upserts";
 
 export default class RegionService {
 
@@ -58,15 +59,16 @@ export default class RegionService {
     /**
      * Create or update element
      */
-    static async upsert(data: { areaId: number, code: string, name: string }): Promise<Region> {
+    static async upsert(data: IRegionUpsert): Promise<Region> {
+        const {areaId, ...region} = data;
         const upsert = {
-            code: data.code,
-            name: data.name,
+            ...region,
+            deletedAt: null,
             area: {
                 connect: {
-                    id: data.areaId
+                    id: areaId
                 }
-            }, deletedAt: null
+            }
         };
         return prisma.region.upsert({
             where: {
@@ -82,7 +84,7 @@ export default class RegionService {
      * @param ids the id of the regions NOT to be deleted
      */
     static async deleteNotIn(ids: Array<number>): Promise<number> {
-        const {count} = await  prisma.region.deleteMany({
+        const {count} = await prisma.region.deleteMany({
             where: {
                 deletedAt: null,
                 id: {

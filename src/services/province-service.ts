@@ -1,6 +1,7 @@
 import prisma from "../helpers/prisma";
 import {Prisma, Province} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
+import {IProvinceUpsert} from "../interfaces/prisma-upserts";
 
 export default class ProvinceService {
 
@@ -58,16 +59,16 @@ export default class ProvinceService {
     /**
      * Create or update element
      */
-    static async upsert(data: { regionId: number, code: string, name: string, abbreviation: string }): Promise<Province> {
+    static async upsert(data: IProvinceUpsert): Promise<Province> {
+        const {regionId, ...province} = data;
         const upsert = {
-            code: data.code,
-            name: data.name,
-            abbreviation: data.abbreviation,
+            ...province,
+            deletedAt: null,
             region: {
                 connect: {
-                    id: data.regionId
+                    id: regionId
                 }
-            }, deletedAt: null
+            }
         };
         return prisma.province.upsert({
             where: {

@@ -2,8 +2,7 @@
 CREATE TABLE `istat_scans` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `status` ENUM('PROGRESS', 'COMPLETED', 'ERROR') NOT NULL DEFAULT 'PROGRESS',
-    `publishDate` VARCHAR(191) NOT NULL,
-    `updatedItems` INTEGER NOT NULL DEFAULT 0,
+    `databaseName` VARCHAR(191) NOT NULL,
     `statusMessage` VARCHAR(191) NULL,
     `startAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `endAt` DATETIME(3) NULL,
@@ -50,8 +49,6 @@ CREATE TABLE `provinces` (
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `provinces_code_key`(`code`),
-    UNIQUE INDEX `provinces_name_key`(`name`),
     UNIQUE INDEX `provinces_code_name_key`(`code`, `name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

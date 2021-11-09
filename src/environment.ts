@@ -28,11 +28,6 @@ const environment = {
     storagePath: `${__dirname}/../storage`,
 
     /**
-     * The URL of istat archive
-     */
-    istatUrl: 'https://www.istat.it/it/archivio/6789',
-
-    /**
      * The URL of istat Permalink xls
      */
     istatPermalink: 'https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.xls'

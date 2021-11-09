@@ -1,5 +1,5 @@
 import prisma from "../helpers/prisma";
-import {IstatScan, Prisma, ScanStatus} from "@prisma/client";
+import {IstatScan, Prisma} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
 
 export default class IstatScanService {
@@ -20,7 +20,7 @@ export default class IstatScanService {
                 ...where
             },
             orderBy: {
-                endAt: 'desc'
+                startAt: 'desc'
             }
         });
     }
@@ -53,35 +53,6 @@ export default class IstatScanService {
         }
 
         return istatScan;
-    }
-
-    /**
-     * Return the last valid element
-     */
-    static async getLast(): Promise<IstatScan> {
-        const istatScan = await prisma.istatScan.findFirst({
-            where: {
-                status: ScanStatus.COMPLETED,
-                deletedAt: null
-            },
-            orderBy: {
-                endAt: 'desc'
-            }
-        });
-
-        if (!istatScan) {
-            throw new NotFoundException('No COMPLETED scans were found', false);
-        }
-
-        return istatScan;
-    }
-
-    /**
-     * Check if specific IstatScan exist
-     * @param id id of element
-     */
-    static async exist(id: number): Promise<boolean> {
-        return this.find(id).then(_ => true).catch(_ => false);
     }
 
     /**

@@ -27,7 +27,7 @@ export default class CityController {
 
         const paginatedList: IPaginatedList<City> = {
             pageSize, currentPage,
-            totalPages: await CityService.count(),
+            totalPages: Math.ceil(await CityService.count(where) / pageSize),
             contentList: await CityService.list(currentPage, pageSize, where)
         };
 
@@ -43,5 +43,4 @@ export default class CityController {
         const {id} = req.params;
         res.send(await CityService.find(Number(id)));
     }
-
 }
