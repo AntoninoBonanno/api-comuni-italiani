@@ -16,14 +16,25 @@ export default class CityController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
-        let where: (Prisma.CityWhereInput | undefined) = undefined
-        if (queryData.name) {
-            where = {
-                name: {
-                    contains: queryData.name
-                }
-            }
-        }
+        const where: (Prisma.CityWhereInput | undefined) = {
+            name: queryData.name ? {
+                contains: queryData.name
+            } : undefined,
+            code: queryData.code ? {
+                contains: queryData.code
+            } : undefined,
+            cadastralCode: queryData.cadastralCode ? {
+                contains: queryData.cadastralCode
+            } : undefined,
+            capital: queryData.capital !== undefined ? queryData.capital === 'true' : undefined,
+            province: queryData.province ? {
+                OR: [
+                    {id: isNaN(Number(queryData.province)) ? undefined : Number(queryData.province)},
+                    {name: {contains: queryData.province}},
+                    {abbreviation: {contains: queryData.province}}
+                ]
+            } : undefined
+        };
 
         const paginatedList: IPaginatedList<City> = {
             pageSize, currentPage,

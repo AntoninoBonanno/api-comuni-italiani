@@ -80,6 +80,7 @@ model City {
   italianName       String
   otherLanguageName String?
   cadastralCode     String
+  capital           Boolean
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   deletedAt         DateTime?

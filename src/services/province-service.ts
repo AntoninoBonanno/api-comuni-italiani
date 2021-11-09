@@ -19,9 +19,6 @@ export default class ProvinceService {
             where: {
                 deletedAt: null,
                 ...where
-            },
-            orderBy: {
-                createdAt: 'desc'
             }
         });
     }

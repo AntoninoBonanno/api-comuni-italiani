@@ -62,6 +62,7 @@ CREATE TABLE `cities` (
     `italianName` VARCHAR(191) NOT NULL,
     `otherLanguageName` VARCHAR(191) NULL,
     `cadastralCode` VARCHAR(191) NOT NULL,
+    `capital` BOOLEAN NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,

@@ -19,9 +19,6 @@ export default class RegionService {
             where: {
                 deletedAt: null,
                 ...where
-            },
-            orderBy: {
-                createdAt: 'desc'
             }
         });
     }

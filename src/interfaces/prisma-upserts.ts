@@ -16,5 +16,6 @@ export interface ICityUpsert extends IAreaUpsert {
     provinceId: number,
     italianName: string,
     otherLanguageName?: string,
-    cadastralCode: string
+    cadastralCode: string,
+    capital: boolean
 }
