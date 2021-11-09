@@ -7,12 +7,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum ScanStatus {
+  PROGRESS
+  COMPLETED
+  ERROR
+}
+
+model IstatScan {
+  id            Int        @id @default(autoincrement())
+  status        ScanStatus @default(PROGRESS)
+  databaseName  String
+  statusMessage String?
+  startAt       DateTime   @default(now())
+  endAt         DateTime?
+  deletedAt     DateTime?
+
+  @@map("istat_scans")
+}
+
 model Area {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   code      String
   name      String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   regions Region[]
 
@@ -21,12 +40,13 @@ model Area {
 }
 
 model Region {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   areaId    Int
-  code      String   @unique
-  name      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  code      String
+  name      String
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   area      Area       @relation(fields: [areaId], references: [id])
   provinces Province[]
@@ -36,13 +56,14 @@ model Region {
 }
 
 model Province {
-  id           Int      @id @default(autoincrement())
+  id           Int       @id @default(autoincrement())
   regionId     Int
   code         String
   name         String
   abbreviation String
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  deletedAt    DateTime?
 
   region Region @relation(fields: [regionId], references: [id])
   cities City[]
@@ -52,18 +73,19 @@ model Province {
 }
 
 model City {
-  id                Int     @id @default(autoincrement())
+  id                Int       @id @default(autoincrement())
   provinceId        Int
   code              String
   name              String
   italianName       String
   otherLanguageName String?
   cadastralCode     String
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  deletedAt         DateTime?
 
   province Province @relation(fields: [provinceId], references: [id])
 
+  @@unique([code, name])
   @@map("cities")
 }

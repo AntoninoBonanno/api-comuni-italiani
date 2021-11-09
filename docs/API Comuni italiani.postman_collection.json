@@ -9,7 +9,7 @@
 			"name": "Cities",
 			"item": [
 				{
-					"name": "P: List",
+					"name": "C: List",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -58,7 +58,7 @@
 					"response": []
 				},
 				{
-					"name": "P: FindById",
+					"name": "C: FindById",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -84,6 +84,88 @@
 							],
 							"path": [
 								"cities",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "IstatScans",
+			"item": [
+				{
+					"name": "IS: List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/istat-scans?pageSize=10&currentPage=0",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"istat-scans"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "The number of elements [Default 10]"
+								},
+								{
+									"key": "currentPage",
+									"value": "0",
+									"description": "The number of page to show [Default 0]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "IS: FindById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/istat-scans/1",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"istat-scans",
 								"1"
 							]
 						}

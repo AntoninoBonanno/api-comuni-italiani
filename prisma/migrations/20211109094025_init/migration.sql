@@ -1,10 +1,24 @@
 -- CreateTable
+CREATE TABLE `istat_scans` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `status` ENUM('PROGRESS', 'COMPLETED', 'ERROR') NOT NULL DEFAULT 'PROGRESS',
+    `databaseName` VARCHAR(191) NOT NULL,
+    `statusMessage` VARCHAR(191) NULL,
+    `startAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `endAt` DATETIME(3) NULL,
+    `deletedAt` DATETIME(3) NULL,
+
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
 CREATE TABLE `areas` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `code` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `areas_code_name_key`(`code`, `name`),
     PRIMARY KEY (`id`)
@@ -18,9 +32,8 @@ CREATE TABLE `regions` (
     `name` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
-    UNIQUE INDEX `regions_code_key`(`code`),
-    UNIQUE INDEX `regions_name_key`(`name`),
     UNIQUE INDEX `regions_code_name_key`(`code`, `name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
@@ -34,6 +47,7 @@ CREATE TABLE `provinces` (
     `abbreviation` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
     UNIQUE INDEX `provinces_code_name_key`(`code`, `name`),
     PRIMARY KEY (`id`)
@@ -50,7 +64,9 @@ CREATE TABLE `cities` (
     `cadastralCode` VARCHAR(191) NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
 
+    UNIQUE INDEX `cities_code_name_key`(`code`, `name`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

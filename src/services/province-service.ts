@@ -1,34 +1,19 @@
 import prisma from "../helpers/prisma";
-import {City, Prisma} from "@prisma/client";
+import {Prisma, Province} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
-import {ICityUpsert} from "../interfaces/prisma-upserts";
+import {IProvinceUpsert} from "../interfaces/prisma-upserts";
 
-export default class CityService {
-
-    /**
-     * The fields to include in json response
-     */
-    private static includeRelations = {
-        province: {
-            include: {
-                region: {
-                    include: {
-                        area: true
-                    }
-                }
-            }
-        }
-    }
+export default class ProvinceService {
 
     /**
-     * Return the list of Cities
+     * Return the list of Provinces
      * (currentPage = undefined && pageSize = undefined --> not paginated list)
      * @param currentPage the current page to show
      * @param pageSize the page size (The number of elements)
      * @param where query conditions
      */
-    static async list(currentPage: number = 0, pageSize: number = 10, where?: Prisma.CityWhereInput): Promise<City[]> {
-        return prisma.city.findMany({
+    static async list(currentPage: number = 0, pageSize: number = 10, where?: Prisma.ProvinceWhereInput): Promise<Province[]> {
+        return prisma.province.findMany({
             skip: pageSize * currentPage,
             take: pageSize,
             where: {
@@ -36,7 +21,7 @@ export default class CityService {
                 ...where
             },
             orderBy: {
-                name: 'asc'
+                createdAt: 'desc'
             }
         });
     }
@@ -45,8 +30,8 @@ export default class CityService {
      * Return the number of elements stored
      * @param where query conditions
      */
-    static async count(where?: Prisma.CityWhereInput): Promise<number> {
-        return prisma.city.count({
+    static async count(where?: Prisma.ProvinceWhereInput): Promise<number> {
+        return prisma.province.count({
             where: {
                 deletedAt: null,
                 ...where
@@ -59,34 +44,33 @@ export default class CityService {
      * @param id id of element
      * @param where query conditions
      */
-    static async find(id: number, where?: Prisma.CityWhereInput): Promise<City> {
-        const city = await prisma.city.findFirst({
-            where: {id, deletedAt: null, ...where},
-            include: this.includeRelations
+    static async find(id: number, where?: Prisma.ProvinceWhereInput): Promise<Province> {
+        const province = await prisma.province.findFirst({
+            where: {id, deletedAt: null, ...where}
         });
 
-        if (!city) {
+        if (!province) {
             throw new NotFoundException(id.toString());
         }
 
-        return city;
+        return province;
     }
 
     /**
      * Create or update element
      */
-    static async upsert(data: ICityUpsert): Promise<City> {
-        const {provinceId, ...city} = data;
+    static async upsert(data: IProvinceUpsert): Promise<Province> {
+        const {regionId, ...province} = data;
         const upsert = {
-            ...city,
+            ...province,
             deletedAt: null,
-            province: {
+            region: {
                 connect: {
-                    id: provinceId
+                    id: regionId
                 }
             }
         };
-        return prisma.city.upsert({
+        return prisma.province.upsert({
             where: {
                 code_name: {code: data.code, name: data.name}
             },
@@ -96,11 +80,11 @@ export default class CityService {
     }
 
     /**
-     * Delete the Cities which have no id in the array
-     * @param ids the id of the cities NOT to be deleted
+     * Delete the Provinces which have no id in the array
+     * @param ids the id of the provinces NOT to be deleted
      */
     static async deleteNotIn(ids: Array<number>): Promise<number> {
-        const {count} = await prisma.city.deleteMany({
+        const {count} = await prisma.province.deleteMany({
             where: {
                 deletedAt: null,
                 id: {
