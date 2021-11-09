@@ -1,15 +1,15 @@
 {
 	"info": {
-		"_postman_id": "cc5a242f-1f68-4174-b53d-b8777434d1a5",
+		"_postman_id": "9d9b8611-398a-4f80-ac12-21f3bfaa1e1f",
 		"name": "API Comuni italiani",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
 		{
-			"name": "Cities",
+			"name": "Areas",
 			"item": [
 				{
-					"name": "C: List",
+					"name": "A: List",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -29,12 +29,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUri}}api/cities?pageSize=10&currentPage=0&name",
+							"raw": "{{baseUri}}api/areas?pageSize=10&currentPage=0",
 							"host": [
 								"{{baseUri}}api"
 							],
 							"path": [
-								"cities"
+								"areas"
 							],
 							"query": [
 								{
@@ -46,11 +46,6 @@
 									"key": "currentPage",
 									"value": "0",
 									"description": "The number of page to show [Default 0]"
-								},
-								{
-									"key": "name",
-									"value": null,
-									"description": "The string that looks like the city name [Optional]"
 								}
 							]
 						}
@@ -58,7 +53,7 @@
 					"response": []
 				},
 				{
-					"name": "C: FindById",
+					"name": "A: FindById",
 					"request": {
 						"auth": {
 							"type": "bearer",
@@ -78,12 +73,12 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUri}}api/cities/1",
+							"raw": "{{baseUri}}api/areas/1",
 							"host": [
 								"{{baseUri}}api"
 							],
 							"path": [
-								"cities",
+								"areas",
 								"1"
 							]
 						}
@@ -175,7 +170,283 @@
 			]
 		},
 		{
-			"name": "IsAlive",
+			"name": "Cities",
+			"item": [
+				{
+					"name": "C: List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/cities?pageSize=10&currentPage=0",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"cities"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "The number of elements [Default 10]"
+								},
+								{
+									"key": "currentPage",
+									"value": "0",
+									"description": "The number of page to show [Default 0]"
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "Filter by city name [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "",
+									"description": "Filter by city code [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "cadastralCode",
+									"value": "",
+									"description": "Filter by city cadastralCode [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "capital",
+									"value": "",
+									"description": "Filter by city capital [Optional - accept true | false]",
+									"disabled": true
+								},
+								{
+									"key": "province",
+									"value": "",
+									"description": "Filter by city province [Optional - accept province id | province name | province abbreviation]",
+									"disabled": true
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "C: FindById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/cities/1",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"cities",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Regions",
+			"item": [
+				{
+					"name": "R: List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/regions?pageSize=10&currentPage=0",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"regions"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "The number of elements [Default 10]"
+								},
+								{
+									"key": "currentPage",
+									"value": "0",
+									"description": "The number of page to show [Default 0]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "R: FindById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/regions/1",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"regions",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Provinces",
+			"item": [
+				{
+					"name": "P: List",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/provinces?pageSize=10&currentPage=0",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"provinces"
+							],
+							"query": [
+								{
+									"key": "pageSize",
+									"value": "10",
+									"description": "The number of elements [Default 10]"
+								},
+								{
+									"key": "currentPage",
+									"value": "0",
+									"description": "The number of page to show [Default 0]"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "P: FindById",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								},
+								{
+									"key": "password",
+									"value": "{{Token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUri}}api/provinces/1",
+							"host": [
+								"{{baseUri}}api"
+							],
+							"path": [
+								"provinces",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Info",
 			"request": {
 				"method": "GET",
 				"header": [],

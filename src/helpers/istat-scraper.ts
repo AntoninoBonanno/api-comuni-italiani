@@ -36,20 +36,22 @@ export default class IstatScraper {
      */
     static async checkUpToDate(istatFile?: IIstatFile): Promise<IUpdateInfo> {
         if (!istatFile) {
-            istatFile = await IstatScraper.getIstatFile();
-            IstatScraper.deleteIstatFile(istatFile); // Delete stored file
+            istatFile = await IstatScraper.getIstatFile().catch(_ => undefined);
+            if (istatFile) {
+                IstatScraper.deleteIstatFile(istatFile); // Delete stored file
+            }
         }
         const lastScans = await IstatScanService.list(0, 5, {
             status: {
                 in: [ScanStatus.COMPLETED, ScanStatus.PROGRESS]
             }
-        }).catch(_ => []);
+        }).catch(_ => []); // Get last 5 scans with status COMPLETED | PROGRESS
         const lastScan = lastScans[0];
 
-        const isUpdated = lastScans.some(lastScan => lastScan.databaseName === istatFile!.databaseName);
+        const isUpdated = istatFile ? lastScans.some(lastScan => lastScan.databaseName === istatFile!.databaseName) : false;
         return {
-            availableDatabase: istatFile.databaseName,
-            currentDatabase: isUpdated ? istatFile.databaseName : (lastScan ? lastScan.databaseName : 'None'),
+            availableDatabase: istatFile?.databaseName ?? 'Error in retrieving ISTAT info',
+            currentDatabase: lastScan?.databaseName ?? 'None',
             lastCheck: lastScan ? (lastScan.status === ScanStatus.PROGRESS ? 'In progress' : lastScan.startAt.toISOString()) : 'Never',
             nextCheck: IstatScraper.job ? IstatScraper.job.nextDates().toISOString() : 'CronJob unset',
             isUpdated
@@ -66,11 +68,13 @@ export default class IstatScraper {
 
         if (updateInfo.isUpdated) {
             if (saveAttempt) {
-                await IstatScanService.create({
+                await IstatScanService.create({ // Store completed attempt with 'No updates available' message
                     status: ScanStatus.COMPLETED,
                     databaseName: istatFile.databaseName,
                     statusMessage: 'No updates available',
                     endAt: new Date()
+                }).catch(e => {
+                    Logger.error(`[IstatScraper] No updates available -> error: ${e.stack}`);
                 });
             } else {
                 Logger.info('[IstatScraper] No updates available');
@@ -131,6 +135,7 @@ export default class IstatScraper {
                     italianName: row.G.trim(),
                     otherLanguageName: row.H?.trim(),
                     cadastralCode: row.T.trim(),
+                    capital: row.N.trim() === '1'
                 }
                 if (!cache.cities.has(city.code)) {
                     cache.cities.set(city.code, (await CityService.upsert(city)).id);
@@ -143,12 +148,12 @@ export default class IstatScraper {
             await RegionService.deleteNotIn([...cache.regions.values()]);
             await AreaService.deleteNotIn([...cache.areas.values()]);
 
-            await IstatScanService.update(istatScan.id, {
+            await IstatScanService.update(istatScan.id, { // Store completed attempt
                 status: ScanStatus.COMPLETED,
                 endAt: new Date()
             });
         } catch (e) {
-            await IstatScanService.update(istatScan.id, {
+            await IstatScanService.update(istatScan.id, { // Store error attempt
                 status: ScanStatus.ERROR,
                 statusMessage: e.message,
                 endAt: new Date()
@@ -166,6 +171,7 @@ export default class IstatScraper {
      */
     private static async getIstatDatabase(istatFile?: IIstatFile): Promise<IIstatDatabase> {
         if (!istatFile) {
+            // If cached istatFile is undefined retrieve new file
             istatFile = await IstatScraper.getIstatFile();
         }
 
@@ -188,19 +194,24 @@ export default class IstatScraper {
      */
     private static async getIstatFile(): Promise<IIstatFile> {
         if (!fs.existsSync(`${environment.storagePath}/`)) {
+            // Make storage dir if not exists
             fs.mkdirSync(`${environment.storagePath}/`);
         }
 
+        // Get and store file from ISTAT permalink
         const filePath = `${environment.storagePath}/${(new Date()).getTime()}.xls`;
         const {data} = await axios.get(environment.istatPermalink, {
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'blob',
             }
+        }).catch(e => {
+            throw new Error(`[IstatScraper] Error in retrieving the file: ${e.stack}`);
         });
 
         fs.writeFileSync(filePath, data);
 
+        // Read file and get the database name (first sheet name)
         const workbook = XLSX.read(filePath, {type: 'file'});
         const [firstSheetName] = workbook.SheetNames;
         return {

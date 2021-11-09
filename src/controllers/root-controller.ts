@@ -6,7 +6,7 @@ import IInfoMessage from "../interfaces/info-message";
 export default class RootController {
 
     /**
-     * Check if the ISTAT archive has updates
+     * Get database info and check if the ISTAT archive has updates
      * @param req the request
      * @param res the response as a IInfoMessage
      */

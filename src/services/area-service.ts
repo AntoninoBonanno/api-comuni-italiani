@@ -19,9 +19,6 @@ export default class AreaService {
             where: {
                 deletedAt: null,
                 ...where
-            },
-            orderBy: {
-                createdAt: 'desc'
             }
         });
     }
