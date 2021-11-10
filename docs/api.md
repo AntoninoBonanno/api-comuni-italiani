@@ -42,7 +42,7 @@ Get system info:
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/
+GET //localhost:8000/
  ```
 
 ```json
@@ -92,7 +92,7 @@ Find an Area resource by id
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/areas/1
+GET //localhost:8000/api/areas/1
  ```
 
 ```json
@@ -137,7 +137,7 @@ Get the paginated list of Areas
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/areas?currentPage=0&pageSize=2&name=n
+GET //localhost:8000/api/areas?currentPage=0&pageSize=2&name=n
  ```
 
 ```json
@@ -203,7 +203,7 @@ Find a Region resource by id
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/regions/1
+GET //localhost:8000/api/regions/1
  ```
 
 ```json
@@ -250,7 +250,7 @@ Get the paginated list of Regions
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/regions?pageSize=2&currentPage=0&area=nord
+GET //localhost:8000/api/regions?pageSize=2&currentPage=0&area=nord
  ```
 
 ```json
@@ -319,7 +319,7 @@ Find a Province resource by id
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/provinces/1
+GET //localhost:8000/api/provinces/1
  ```
 
 ```json
@@ -367,7 +367,7 @@ Get the paginated list of Provinces
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/provinces?pageSize=2&currentPage=0&region=piem
+GET //localhost:8000/api/provinces?pageSize=2&currentPage=0&region=piem
  ```
 
 ```json
@@ -441,7 +441,7 @@ Find a City resource by id
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/cities/1
+GET //localhost:8000/api/cities/1
  ```
 
 ```json
@@ -501,7 +501,7 @@ Get the paginated list of Cities
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/cities?currentPage=0&pageSize=2&province=torino
+GET //localhost:8000/api/cities?currentPage=0&pageSize=2&province=torino
  ```
 
 ```json
@@ -592,7 +592,7 @@ Find a IstatScan resource by id
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/istat-scans/1
+GET //localhost:8000/api/istat-scans/1
  ```
 
 ```json
@@ -633,7 +633,7 @@ Get the paginated list of IstatScans
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
 
 ```http
-GET http://localhost:8000/api/istat-scans
+GET //localhost:8000/api/istat-scans
  ```
 
 ```json
