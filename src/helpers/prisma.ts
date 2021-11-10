@@ -1,4 +1,4 @@
-import {PrismaClient} from "@prisma/client";
+import {Prisma, PrismaClient} from "@prisma/client";
 import environment from "../environment";
 
 // PrismaClient is attached to the `global` object in development to prevent
@@ -31,3 +31,18 @@ prisma.$use(async (params, next) => {
 
 if (!environment.isProduction()) global.prisma = prisma;
 export default prisma;
+
+/**
+ * Create the shared Where object from the query data
+ * @param queryData the validated query data
+ */
+export function getWhereByCodeNameChain(queryData: any): Prisma.AreaWhereInput {
+    return {
+        name: queryData.name ? {
+            contains: queryData.name
+        } : undefined,
+        code: queryData.code ? {
+            contains: queryData.code
+        } : undefined
+    }
+}

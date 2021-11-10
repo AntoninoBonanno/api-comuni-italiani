@@ -1,13 +1,14 @@
 import express from "express";
 import {wrap} from "async-middleware";
 import GeneralValidation from "../../validations/shared/general-validation";
-import ProvinceController from "../../controllers/provinces-controller";
+import ProvinceController from "../../controllers/province-controller";
+import ProvinceValidation from "../../validations/province-validation";
 
 const provinceRouter = express.Router();
 
 provinceRouter.get(
     '/',
-    GeneralValidation.paginatedList,
+    ProvinceValidation.list,
     wrap(ProvinceController.list)
 );
 

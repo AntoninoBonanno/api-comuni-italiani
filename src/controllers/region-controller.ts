@@ -1,8 +1,9 @@
 import {Request, Response} from "express";
 import {matchedData} from "express-validator";
-import {Region} from "@prisma/client";
+import {Prisma, Region} from "@prisma/client";
 import IPaginatedList from "../interfaces/paginated-list";
 import RegionService from "../services/region-service";
+import {getWhereByCodeNameChain} from "../helpers/prisma";
 
 export default class RegionController {
 
@@ -16,10 +17,20 @@ export default class RegionController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
+        const where: (Prisma.RegionWhereInput | undefined) = {
+            ...getWhereByCodeNameChain(queryData),
+            area: queryData.area ? {
+                OR: [
+                    {id: isNaN(Number(queryData.area)) ? undefined : Number(queryData.area)},
+                    {name: {contains: queryData.area}}
+                ]
+            } : undefined
+        };
+
         const paginatedList: IPaginatedList<Region> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await RegionService.count() / pageSize),
-            contentList: await RegionService.list(currentPage, pageSize)
+            totalPages: Math.ceil(await RegionService.count(where) / pageSize),
+            contentList: await RegionService.list(currentPage, pageSize, where)
         };
 
         res.send(paginatedList);

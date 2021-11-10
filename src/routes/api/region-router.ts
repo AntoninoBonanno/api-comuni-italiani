@@ -2,12 +2,13 @@ import express from "express";
 import {wrap} from "async-middleware";
 import GeneralValidation from "../../validations/shared/general-validation";
 import RegionController from "../../controllers/region-controller";
+import RegionValidation from "../../validations/region-validation";
 
 const regionRouter = express.Router();
 
 regionRouter.get(
     '/',
-    GeneralValidation.paginatedList,
+    RegionValidation.list,
     wrap(RegionController.list)
 );
 

@@ -1,6 +1,6 @@
 # API Comuni italiani
 
-Unofficial API service, which returns information on Italian **regions**, **provinces** and **cities**.
+Unofficial API service, which returns information on Italian **areas**, **regions**, **provinces** and **cities**.
 
 Service realized with Node.js server based on the Express framework and on the MySQL database.
 
@@ -10,11 +10,9 @@ Service realized with Node.js server based on the Express framework and on the M
 
 ### Features
 
-- Automatic database update (
-  The [ISTAT Permalink](https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.xls) is checked
-  every X months)
-- API divided by **regions**, **provinces** and **cities** with the possibility of filtering the data. (
-  See [documentation](/docs/api.md))
+- Automatic database update (The [ISTAT Permalink](https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.xls) is checked
+  every 3 months - configurable)
+- API divided by [**areas**](/docs/api.md#areas), [**regions**](/docs/api.md#regions), [**provinces**](/docs/api.md#provinces) and [**cities**](/docs/api.md#cities) with the possibility of filtering the data. (See [documentation](/docs/api.md))
 
 ## Support me
 
@@ -31,6 +29,7 @@ Service realized with Node.js server based on the Express framework and on the M
 ### TODO
 
 - [ ] Add dockerfile
+- [ ] Bug cron, helpers/istat-scraper line 25: [Issue opened](https://github.com/kelektiv/node-cron/issues/587)
 
 ## Getting Involved
 

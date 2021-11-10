@@ -1,5 +1,11 @@
 export default interface IInfoMessage extends IUpdateInfo {
     message: string,
+    _count: {
+        areas: number,
+        regions: number,
+        provinces: number,
+        cities: number
+    }
 }
 
 export interface IUpdateInfo {

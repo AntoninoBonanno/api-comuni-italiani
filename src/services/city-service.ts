@@ -9,15 +9,7 @@ export default class CityService {
      * The fields to include in json response
      */
     private static includeRelations = {
-        province: {
-            include: {
-                region: {
-                    include: {
-                        area: true
-                    }
-                }
-            }
-        }
+        province: true
     }
 
     /**
@@ -37,7 +29,8 @@ export default class CityService {
             },
             orderBy: {
                 name: 'asc'
-            }
+            },
+            include: CityService.includeRelations
         });
     }
 
@@ -62,7 +55,7 @@ export default class CityService {
     static async find(id: number, where?: Prisma.CityWhereInput): Promise<City> {
         const city = await prisma.city.findFirst({
             where: {id, deletedAt: null, ...where},
-            include: this.includeRelations
+            include: CityService.includeRelations
         });
 
         if (!city) {

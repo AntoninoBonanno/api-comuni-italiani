@@ -3,6 +3,7 @@ import {matchedData} from "express-validator";
 import {Area} from "@prisma/client";
 import IPaginatedList from "../interfaces/paginated-list";
 import AreaService from "../services/area-service";
+import {getWhereByCodeNameChain} from "../helpers/prisma";
 
 export default class AreaController {
 
@@ -16,10 +17,11 @@ export default class AreaController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
+        const where = getWhereByCodeNameChain(queryData);
         const paginatedList: IPaginatedList<Area> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await AreaService.count() / pageSize),
-            contentList: await AreaService.list(currentPage, pageSize)
+            totalPages: Math.ceil(await AreaService.count(where) / pageSize),
+            contentList: await AreaService.list(currentPage, pageSize, where)
         };
 
         res.send(paginatedList);
