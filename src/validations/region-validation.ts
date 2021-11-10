@@ -5,12 +5,10 @@ import {codeNamePaginatedListChain} from "./shared/general-validation";
 
 /** VALIDATIONS **/
 
-const CityValidation: IListValidation = {
+const RegionValidation: IListValidation = {
     list: validationMiddleware([
         ...codeNamePaginatedListChain,
-        query('cadastralCode').optional().isString().trim(),
-        query('capital').optional().isBoolean(),
-        query('province').optional().isString().trim()
+        query('area').optional().isString().trim()
     ])
 };
-export default CityValidation;
+export default RegionValidation;

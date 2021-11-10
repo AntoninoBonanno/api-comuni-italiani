@@ -40,7 +40,10 @@ const environment = {
     /**
      * Set how many months you want to scan on the ISTAT site, started every first day of month at 10:00
      */
-    istatScanMonthlyPeriod: (!process.env.ISTAT_SCAN_MONTHLY_PERIOD || process.env.ISTAT_SCAN_MONTHLY_PERIOD < '1' || process.env.ISTAT_SCAN_MONTHLY_PERIOD > '12') ? '3' : process.env.ISTAT_SCAN_MONTHLY_PERIOD
+    istatScanMonthlyPeriod: (): number => {
+        const monthly = Number(process.env.ISTAT_SCAN_MONTHLY_PERIOD);
+        return (isNaN(monthly) || monthly < 1 || monthly > 12) ? 3 : monthly;
+    }
 };
 
 export default environment;

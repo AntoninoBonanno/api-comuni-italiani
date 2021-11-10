@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "9d9b8611-398a-4f80-ac12-21f3bfaa1e1f",
+		"_postman_id": "0591cc40-d7d6-4380-b824-bf352a8ab228",
 		"name": "API Comuni italiani",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -46,6 +46,18 @@
 									"key": "currentPage",
 									"value": "0",
 									"description": "The number of page to show [Default 0]"
+								},
+								{
+									"key": "name",
+									"value": "",
+									"description": "Filter by area name [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "",
+									"description": "Filter by area code [Optional]",
+									"disabled": true
 								}
 							]
 						}
@@ -232,13 +244,13 @@
 								{
 									"key": "capital",
 									"value": "",
-									"description": "Filter by city capital [Optional - accept true | false]",
+									"description": "Filter by city capital [Optional - accept true | 1 | false | 0]",
 									"disabled": true
 								},
 								{
 									"key": "province",
 									"value": "",
-									"description": "Filter by city province [Optional - accept province id | province name | province abbreviation]",
+									"description": "Filter by province of city [Optional -  accept province id | province name | province abbreviation]",
 									"disabled": true
 								}
 							]
@@ -322,6 +334,24 @@
 									"key": "currentPage",
 									"value": "0",
 									"description": "The number of page to show [Default 0]"
+								},
+								{
+									"key": "name",
+									"value": null,
+									"description": "Filter by region name [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": "",
+									"description": "Filter by region code [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "area",
+									"value": "",
+									"description": "Filter by area of region [Optional - accept area id | area name]",
+									"disabled": true
 								}
 							]
 						}
@@ -404,6 +434,24 @@
 									"key": "currentPage",
 									"value": "0",
 									"description": "The number of page to show [Default 0]"
+								},
+								{
+									"key": "name",
+									"value": null,
+									"description": "Filter by province name [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "code",
+									"value": null,
+									"description": "Filter by province code [Optional]",
+									"disabled": true
+								},
+								{
+									"key": "region",
+									"value": "",
+									"description": "Filter by region of province [Optional - accept region id | region name]",
+									"disabled": true
 								}
 							]
 						}

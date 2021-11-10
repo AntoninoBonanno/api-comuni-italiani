@@ -6,6 +6,13 @@ import {IProvinceUpsert} from "../interfaces/prisma-upserts";
 export default class ProvinceService {
 
     /**
+     * The fields to include in json response
+     */
+    private static includeRelationsCount = {
+        _count: {select: {cities: true}}
+    }
+
+    /**
      * Return the list of Provinces
      * (currentPage = undefined && pageSize = undefined --> not paginated list)
      * @param currentPage the current page to show
@@ -19,7 +26,8 @@ export default class ProvinceService {
             where: {
                 deletedAt: null,
                 ...where
-            }
+            },
+            include: ProvinceService.includeRelationsCount
         });
     }
 
@@ -43,7 +51,8 @@ export default class ProvinceService {
      */
     static async find(id: number, where?: Prisma.ProvinceWhereInput): Promise<Province> {
         const province = await prisma.province.findFirst({
-            where: {id, deletedAt: null, ...where}
+            where: {id, deletedAt: null, ...where},
+            include: ProvinceService.includeRelationsCount
         });
 
         if (!province) {

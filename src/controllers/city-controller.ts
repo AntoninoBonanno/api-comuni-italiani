@@ -3,6 +3,7 @@ import IPaginatedList from "../interfaces/paginated-list";
 import {City, Prisma} from "@prisma/client";
 import CityService from "../services/city-service";
 import {matchedData} from "express-validator";
+import {getWhereByCodeNameChain} from "../helpers/prisma";
 
 export default class CityController {
 
@@ -16,17 +17,12 @@ export default class CityController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
-        const where: (Prisma.CityWhereInput | undefined) = {
-            name: queryData.name ? {
-                contains: queryData.name
-            } : undefined,
-            code: queryData.code ? {
-                contains: queryData.code
-            } : undefined,
+        const where: Prisma.CityWhereInput = {
+            ...getWhereByCodeNameChain(queryData),
             cadastralCode: queryData.cadastralCode ? {
                 contains: queryData.cadastralCode
             } : undefined,
-            capital: queryData.capital !== undefined ? queryData.capital === 'true' : undefined,
+            capital: queryData.capital !== undefined ? ['true', '1'].includes(queryData.capital) : undefined,
             province: queryData.province ? {
                 OR: [
                     {id: isNaN(Number(queryData.province)) ? undefined : Number(queryData.province)},

@@ -6,6 +6,13 @@ import {IAreaUpsert} from "../interfaces/prisma-upserts";
 export default class AreaService {
 
     /**
+     * The fields to include in json response
+     */
+    public static includeRelationsCount = {
+        _count: {select: {regions: true}}
+    }
+
+    /**
      * Return the list of Areas
      * (currentPage = undefined && pageSize = undefined --> not paginated list)
      * @param currentPage the current page to show
@@ -19,7 +26,8 @@ export default class AreaService {
             where: {
                 deletedAt: null,
                 ...where
-            }
+            },
+            include: AreaService.includeRelationsCount
         });
     }
 
@@ -43,7 +51,8 @@ export default class AreaService {
      */
     static async find(id: number, where?: Prisma.AreaWhereInput): Promise<Area> {
         const area = await prisma.area.findFirst({
-            where: {id, deletedAt: null, ...where}
+            where: {id, deletedAt: null, ...where},
+            include: AreaService.includeRelationsCount
         });
 
         if (!area) {
