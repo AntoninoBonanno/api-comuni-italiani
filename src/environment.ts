@@ -5,12 +5,12 @@ const environment = {
     /**
      * The app name
      */
-    appName: process.env.APP_NAME || 'My App',
+    appName: process.env.APP_NAME || 'API Comuni Italiani',
 
     /**
      * The environment mode
      */
-    appEnv: process.env.APP_ENV || 'development',
+    appEnv: process.env.APP_ENV || 'production',
 
     /**
      * Return true if app is in production mode
@@ -21,11 +21,6 @@ const environment = {
      * The app port
      */
     port: process.env.APP_PORT || 8000,
-
-    /**
-     * The app timezone
-     */
-    timezone: process.env.APP_TIMEZONE || 'Europe/Rome',
 
     /**
      * Path of Storage directory

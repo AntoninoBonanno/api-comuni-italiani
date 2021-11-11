@@ -14,6 +14,17 @@ Service realized with Node.js server based on the Express framework and on the M
   every 3 months - configurable)
 - API divided by [**areas**](/docs/api.md#areas), [**regions**](/docs/api.md#regions), [**provinces**](/docs/api.md#provinces) and [**cities**](/docs/api.md#cities) with the possibility of filtering the data. (See [documentation](/docs/api.md))
 
+## Docker 
+
+#### Build
+`docker build -t antoninobonanno/api-comuni-italiani .`
+
+#### Run
+<s>`docker run -p 8000:8000 -e DATABASE_URL="mysql://root:@localhost:3306/comuni-italiani" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani`</s>
+
+`docker-compose up -d`
+
+
 ## Support me
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C46QJ0M)
@@ -28,7 +39,7 @@ Service realized with Node.js server based on the Express framework and on the M
 
 ### TODO
 
-- [ ] Add dockerfile
+- [ ] How run `npx prisma migrate deploy` automatically (docker)
 - [ ] Bug cron, helpers/istat-scraper line 25: [Issue opened](https://github.com/kelektiv/node-cron/issues/587)
 
 ## Getting Involved

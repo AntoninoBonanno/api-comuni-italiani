@@ -25,7 +25,7 @@ export default class IstatScraper {
         IstatScraper.job = new CronJob(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, () => {
             fs.rmSync(IstatScraper.storageDir, {recursive: true, force: true}); // clear storage dir
             IstatScraper.startScan().then();
-        }, null, true, environment.timezone);
+        }, null, true);
         IstatScraper.startScan(false).then();
     }
 
@@ -73,7 +73,10 @@ export default class IstatScraper {
     static async startScan(saveAttempt: boolean = true): Promise<void> {
         Logger.info('[IstatScraper] Start Istat scan');
         const istatFile = await IstatScraper.getIstatFile(),
-            updateInfo = await IstatScraper.checkUpToDate(istatFile);
+            updateInfo = await IstatScraper.checkUpToDate(istatFile).catch(e => {
+                IstatScraper.deleteIstatFile(istatFile);
+                throw new Error(e);
+            });
 
         if (updateInfo.isUpdated) {
             if (saveAttempt) {
