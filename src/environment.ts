@@ -37,7 +37,7 @@ const environment = {
      */
     istatScanMonthlyPeriod: (): number => {
         const monthly = Number(process.env.ISTAT_SCAN_MONTHLY_PERIOD);
-        return (isNaN(monthly) || monthly < 1 || monthly > 12) ? 3 : monthly;
+        return (isNaN(monthly) || monthly < 1 || monthly > 12) ? 5 : monthly;
     }
 };
 

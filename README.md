@@ -11,18 +11,20 @@ Service realized with Node.js server based on the Express framework and on the M
 ### Features
 
 - Automatic database update (The [ISTAT Permalink](https://www.istat.it/storage/codici-unita-amministrative/Elenco-comuni-italiani.xls) is checked
-  every 3 months - configurable)
+  every 5 months - configurable)
 - API divided by [**areas**](/docs/api.md#areas), [**regions**](/docs/api.md#regions), [**provinces**](/docs/api.md#provinces) and [**cities**](/docs/api.md#cities) with the possibility of filtering the data. (See [documentation](/docs/api.md))
 
 ## Docker 
 
 #### Build
-`docker build -t antoninobonanno/api-comuni-italiani .`
+`docker build -t antoninobonanno/api-comuni-italiani -f docker/Dockerfile .`
 
 #### Run
-<s>`docker run -p 8000:8000 -e DATABASE_URL="mysql://root:@localhost:3306/comuni-italiani" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani`</s>
+```
+docker run -p 8000:8000 -e DATABASE_URL="mysql://root:@host.docker.internal:3306/comuni-italiani" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani
+```
 
-`docker-compose up -d`
+<s>`docker-compose up -d`</s>
 
 
 ## Support me
@@ -39,8 +41,8 @@ Service realized with Node.js server based on the Express framework and on the M
 
 ### TODO
 
-- [ ] How run `npx prisma migrate deploy` automatically (docker)
-- [ ] Bug cron, helpers/istat-scraper line 25: [Issue opened](https://github.com/kelektiv/node-cron/issues/587)
+- [ ] Update docker-compose
+- [ ] Bug cron, helpers/istat-scraper.ts line 25: [Issue opened](https://github.com/kelektiv/node-cron/issues/587)
 
 ## Getting Involved
 

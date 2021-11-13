@@ -1,5 +1,5 @@
 import prisma from "../helpers/prisma";
-import {IstatScan, Prisma} from "@prisma/client";
+import {IstatScan, Prisma, ScanStatus} from "@prisma/client";
 import {NotFoundException} from "../exceptions/http-exceptions";
 
 export default class IstatScanService {
@@ -34,6 +34,28 @@ export default class IstatScanService {
             where: {
                 deletedAt: null,
                 ...where
+            }
+        });
+    }
+
+    /**
+     * Get last scan with status COMPLETED | PROGRESS
+     */
+    static async lastValidScan(): Promise<IstatScan | null> {
+        return prisma.istatScan.findFirst({
+            where: {
+                OR: [
+                    {status: ScanStatus.COMPLETED},
+                    {
+                        status: ScanStatus.PROGRESS,
+                        startAt: {
+                            // The scan takes less than 10 minutes.
+                            // If there are scans in progress with more than 10 minutes it means that
+                            // the server was stopped during the scan
+                            gte: new Date(Date.now() - 1000 * (60 * 10))
+                        }
+                    }
+                ]
             }
         });
     }

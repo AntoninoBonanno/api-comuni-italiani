@@ -15,6 +15,7 @@ Import [API Comuni italiani.postman_collection.json](/docs/API%20Comuni%20italia
 ```http
 GET /
  ```
+**IMPORTANT**: the **first ISTAT scan** (when the database is empty) is started when the **Info API** is fired for the first time
 
 Get system info:
 
@@ -562,7 +563,7 @@ GET //localhost:8000/api/cities?currentPage=0&pageSize=2&province=torino
 
 </details>
 
-## Istat Scans
+## ISTAT Scans
 
 Attempts made to retrieve information from the ISTAT xls file
 

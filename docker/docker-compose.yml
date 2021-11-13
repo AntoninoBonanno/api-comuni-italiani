@@ -20,8 +20,8 @@ services:
     container_name: api-comuni-italiani
     restart: always
     build:
-      context: .
-      dockerfile: ./Dockerfile
+      context: ..
+      dockerfile: Dockerfile
     environment:
       - TZ=Europe/Rome
       - DATABASE_URL=mysql://${DB_USERNAME}:${DB_PASSWORD}@mysql-database:3306/${DB_DATABASE}
