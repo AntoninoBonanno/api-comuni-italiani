@@ -56,6 +56,9 @@ export default class IstatScanService {
                         }
                     }
                 ]
+            },
+            orderBy: {
+                startAt: 'desc'
             }
         });
     }

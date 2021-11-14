@@ -1,6 +1,6 @@
 {
   "name": "api-comuni-italiani",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Node.js server based on the Express framework and on the MySQL database that returns the list of Italian regions, provinces and cities",
   "main": "app.js",
   "scripts": {

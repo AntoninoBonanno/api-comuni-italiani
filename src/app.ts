@@ -1,4 +1,5 @@
 import cors from "cors";
+import {hostname, networkInterfaces} from "os";
 import Helmet from "helmet";
 import Logger from "./helpers/logger";
 import environment from "./environment";
@@ -29,6 +30,9 @@ process.on('unhandledRejection', (error: Error) => { // Unhandled error handler
 
 /** Listen on provided port, on all network interfaces. **/
 app.listen(environment.port, async (): Promise<void> => {
-    Logger.info(`⚡ ${environment.appName} Server Running here -> http://localhost:${environment.port}`);
+    const ip = environment.isProduction() ?
+        Object.values(networkInterfaces()).flat().find(details => details && details.family == 'IPv4' && !details.internal)?.address
+        : 'localhost';
+    Logger.info(`⚡ ${environment.appName} Server Running here -> http://${ip ?? hostname()}:${environment.port}`);
     IstatScraper.initCronJob();
 });

@@ -17,10 +17,13 @@ export default class AreaController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
-        const where = getWhereByCodeNameChain(queryData);
+        const where = getWhereByCodeNameChain(queryData),
+            totalItems = await AreaService.count(where);
+
         const paginatedList: IPaginatedList<Area> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await AreaService.count(where) / pageSize),
+            totalPages: Math.ceil(totalItems / pageSize),
+            totalItems,
             contentList: await AreaService.list(currentPage, pageSize, where)
         };
 

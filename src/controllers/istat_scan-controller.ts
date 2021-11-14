@@ -16,9 +16,11 @@ export default class IstatScanController {
         const pageSize = Number(queryData.pageSize),
             currentPage = Number(queryData.currentPage);
 
+        const totalItems = await IstatScanService.count();
         const paginatedList: IPaginatedList<IstatScan> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await IstatScanService.count() / pageSize),
+            totalPages: Math.ceil(totalItems / pageSize),
+            totalItems,
             contentList: await IstatScanService.list(currentPage, pageSize)
         };
 

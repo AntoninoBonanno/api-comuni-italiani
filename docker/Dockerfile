@@ -10,6 +10,11 @@ RUN npm run build
 FROM node:15-alpine
 WORKDIR /usr/app
 
+ENV APP_PORT=8000
+# Optimise for production
+ENV NODE_ENV production
+
+# Copy app files
 COPY --from=builder /usr/app/package.json .
 COPY --from=builder /usr/app/dist .
 COPY --from=builder /usr/app/prisma ./prisma
@@ -21,5 +26,5 @@ RUN apk add --no-cache --upgrade bash # Add bash to run scripts
 RUN npm install --only=production # Install only production dependencies
 RUN npm install pm2 -g # Process manager
 
-EXPOSE 8000
+EXPOSE ${APP_PORT}
 CMD ["bash", "./scripts/start.sh"]

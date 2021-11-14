@@ -123,6 +123,7 @@ Get the paginated list of Areas
 - **pageSize**: The maximum number of items per page
 - **currentPage**: Index of the current page
 - **totalPages**: Total number of pages
+- **totalItems**: Total number of elements
 - **contentList**: Array of Area resource
 
 **Params**
@@ -146,6 +147,7 @@ GET //localhost:8000/api/areas?currentPage=0&pageSize=2&name=n
   "pageSize": 2,
   "currentPage": 0,
   "totalPages": 2,
+  "totalItems": 3,
   "contentList": [
     {
       "id": 1,
@@ -235,6 +237,7 @@ Get the paginated list of Regions
 - **pageSize**: The maximum number of items per page
 - **currentPage**: Index of the current page
 - **totalPages**: Total number of pages
+- **totalItems**: Total number of elements
 - **contentList**: Array of Region resource
 
 **Params**
@@ -259,6 +262,7 @@ GET //localhost:8000/api/regions?pageSize=2&currentPage=0&area=nord
   "pageSize": 2,
   "currentPage": 0,
   "totalPages": 4,
+  "totalItems": 8,
   "contentList": [
     {
       "id": 1,
@@ -352,6 +356,7 @@ Get the paginated list of Provinces
 - **pageSize**: The maximum number of items per page
 - **currentPage**: Index of the current page
 - **totalPages**: Total number of pages
+- **totalItems**: Total number of elements
 - **contentList**: Array of Province resource
 
 **Params**
@@ -376,6 +381,7 @@ GET //localhost:8000/api/provinces?pageSize=2&currentPage=0&region=piem
   "pageSize": 2,
   "currentPage": 0,
   "totalPages": 4,
+  "totalItems": 8,
   "contentList": [
     {
       "id": 1,
@@ -484,6 +490,7 @@ Get the paginated list of Cities
 - **pageSize**: The maximum number of items per page
 - **currentPage**: Index of the current page
 - **totalPages**: Total number of pages
+- **totalItems**: Total number of elements
 - **contentList**: Array of City resource
 
 **Params**
@@ -510,6 +517,7 @@ GET //localhost:8000/api/cities?currentPage=0&pageSize=2&province=torino
   "pageSize": 2,
   "currentPage": 0,
   "totalPages": 156,
+  "totalItems": 312,
   "contentList": [
     {
       "id": 1,
@@ -621,6 +629,7 @@ Get the paginated list of IstatScans
 - **pageSize**: The maximum number of items per page
 - **currentPage**: Index of the current page
 - **totalPages**: Total number of pages
+- **totalItems**: Total number of elements
 - **contentList**: Array of IstatScan resource
 
 **Params**
@@ -642,6 +651,7 @@ GET //localhost:8000/api/istat-scans
   "pageSize": 10,
   "currentPage": 0,
   "totalPages": 1,
+  "totalItems": 1,
   "contentList": [
     {
       "id": 1,
