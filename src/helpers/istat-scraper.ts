@@ -13,8 +13,17 @@ import IstatScanService from "../services/istat_scan-service";
 import IIstatFile, {IIstatDatabase} from "../interfaces/istat-file";
 import {IUpdateInfo} from "../interfaces/info-message";
 import {IAreaUpsert, ICityUpsert, IProvinceUpsert, IRegionUpsert} from "../interfaces/prisma-upserts";
+import {InternalServerErrorException} from "../exceptions/http-exceptions";
 
 export default class IstatScraper {
+    static messages = {
+        errorIstat: 'Error in retrieving ISTAT info',
+        databaseEmpty: 'None',
+        progress: 'In progress',
+        neverScan: 'Never',
+        cronUnset: 'CronJob unset'
+    };
+
     private static job: CronJob | undefined;
     private static storageDir: string = `${environment.storagePath}/istat_files/`;
 
@@ -22,11 +31,10 @@ export default class IstatScraper {
      * Add cronjob, started every first day of month at 10:00
      */
     static initCronJob(): void {
-        IstatScraper.job = new CronJob(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, () => {
-            fs.rmSync(IstatScraper.storageDir, {recursive: true, force: true}); // clear storage dir
-            IstatScraper.startScan().then();
-        }, null, true, environment.timezone);
-        IstatScraper.startScan(false).then();
+        this.job = new CronJob(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, () => {
+            fs.rmSync(this.storageDir, {recursive: true, force: true}); // clear storage dir
+            this.startScan().catch(error => Logger.error(`[CronJob] ${error.stack}`));
+        }, null, true);
     }
 
     /**
@@ -35,34 +43,19 @@ export default class IstatScraper {
      */
     static async checkUpToDate(istatFile?: IIstatFile): Promise<IUpdateInfo> {
         if (!istatFile) {
-            istatFile = await IstatScraper.getIstatFile().then(istatFile => {
-                IstatScraper.deleteIstatFile(istatFile); // Delete stored file
+            istatFile = await this.getIstatFile().then(istatFile => {
+                this.deleteIstatFile(istatFile); // Delete stored file
                 return istatFile;
             }).catch(_ => undefined);
         }
 
-        const lastScans = await IstatScanService.list(0, 5, {
-            OR: [
-                {status: ScanStatus.COMPLETED},
-                {
-                    status: ScanStatus.PROGRESS,
-                    startAt: {
-                        // The scan takes less than 10 minutes.
-                        // If there are scans in progress with more than 10 minutes it means that
-                        // the server was stopped during the scan
-                        gte: new Date(Date.now() - 1000 * (60 * 10))
-                    }
-                }]
-        }).catch(_ => []); // Get last 5 scans with status COMPLETED | PROGRESS
-
-        const lastScan = lastScans[0];
-        const isUpdated = istatFile ? lastScans.some(lastScan => lastScan.databaseName === istatFile!.databaseName) : false;
+        const lastScan = await IstatScanService.lastValidScan().catch(_ => undefined); // COMPLETED || PROGRESS
         return {
-            availableDatabase: istatFile?.databaseName ?? 'Error in retrieving ISTAT info',
-            currentDatabase: lastScan?.databaseName ?? 'None',
-            lastCheck: lastScan ? (lastScan.status === ScanStatus.PROGRESS ? 'In progress' : lastScan.startAt.toISOString()) : 'Never',
-            nextCheck: IstatScraper.job ? IstatScraper.job.nextDates().toISOString() : 'CronJob unset',
-            isUpdated
+            availableDatabase: istatFile?.databaseName ?? this.messages.errorIstat,
+            currentDatabase: lastScan?.databaseName ?? this.messages.databaseEmpty,
+            lastCheck: lastScan ? (lastScan.status === ScanStatus.PROGRESS ? this.messages.progress : lastScan.startAt.toISOString()) : this.messages.neverScan,
+            nextCheck: this.job ? this.job.nextDates().toISOString() : this.messages.cronUnset,
+            isUpdated: (istatFile && lastScan) ? lastScan.databaseName === istatFile.databaseName : false
         };
     }
 
@@ -70,30 +63,27 @@ export default class IstatScraper {
      * Update the database from the ISTAT permalink
      * @return success true if scan end with success, else error message
      */
-    static async startScan(saveAttempt: boolean = true): Promise<void> {
+    static async startScan(): Promise<void> {
         Logger.info('[IstatScraper] Start Istat scan');
-        const istatFile = await IstatScraper.getIstatFile(),
-            updateInfo = await IstatScraper.checkUpToDate(istatFile);
+        const istatFile = await this.getIstatFile(),
+            updateInfo = await this.checkUpToDate(istatFile);
 
         if (updateInfo.isUpdated) {
-            if (saveAttempt) {
-                await IstatScanService.create({ // Store completed attempt with 'No updates available' message
-                    status: ScanStatus.COMPLETED,
-                    databaseName: istatFile.databaseName,
-                    statusMessage: 'No updates available',
-                    endAt: new Date()
-                }).catch(e => {
-                    Logger.error(`[IstatScraper] No updates available -> error: ${e.stack}`);
-                });
-            } else {
-                Logger.info('[IstatScraper] No updates available');
-            }
-            return IstatScraper.deleteIstatFile(istatFile);
+            await IstatScanService.create({ // Store completed attempt with 'No updates available' message
+                status: ScanStatus.COMPLETED,
+                databaseName: istatFile.databaseName,
+                statusMessage: 'No updates available',
+                endAt: new Date()
+            }).catch(e => {
+                Logger.error(`[IstatScraper] No updates available -> error: ${e.stack}`);
+            });
+            Logger.info('[IstatScraper] No updates available');
+            return this.deleteIstatFile(istatFile);
         }
 
         const istatScan = await IstatScanService.create({databaseName: istatFile.databaseName});
         try {
-            const rows = (await IstatScraper.getIstatDatabase(istatFile)).rows;
+            const rows = (await this.getIstatDatabase(istatFile)).rows;
             rows.shift(); // remove header row
 
             // Cached values, prevent re-update same value in the database Map<IstatCode, DatabaseId>
@@ -169,7 +159,7 @@ export default class IstatScraper {
             });
             Logger.error(`[IstatScraper] Error updating database: ${e.stack}`);
         } finally {
-            IstatScraper.deleteIstatFile(istatFile);
+            this.deleteIstatFile(istatFile);
         }
     }
 
@@ -181,7 +171,7 @@ export default class IstatScraper {
     private static async getIstatDatabase(istatFile?: IIstatFile): Promise<IIstatDatabase> {
         if (!istatFile) {
             // If cached istatFile is undefined retrieve new file
-            istatFile = await IstatScraper.getIstatFile();
+            istatFile = await this.getIstatFile();
         }
 
         const workbook = XLSX.read(istatFile.filePath, {type: 'file'});
@@ -202,20 +192,20 @@ export default class IstatScraper {
      * @return istatFile the istat file info
      */
     private static async getIstatFile(): Promise<IIstatFile> {
-        if (!fs.existsSync(IstatScraper.storageDir)) {
+        if (!fs.existsSync(this.storageDir)) {
             // Make storage dir if not exists
-            fs.mkdirSync(IstatScraper.storageDir, {recursive: true});
+            fs.mkdirSync(this.storageDir, {recursive: true});
         }
 
         // Get and store file from ISTAT permalink
-        const filePath = `${IstatScraper.storageDir}${(new Date()).getTime()}.xls`;
+        const filePath = `${this.storageDir}${(new Date()).getTime()}.xls`;
         const {data} = await axios.get(environment.istatPermalink, {
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'blob',
             }
         }).catch(e => {
-            throw new Error(`[IstatScraper] Error in retrieving the file: ${e.stack}`);
+            throw new InternalServerErrorException(`[IstatScraper] Error in retrieving the file: ${e.stack}`);
         });
 
         fs.writeFileSync(filePath, data);

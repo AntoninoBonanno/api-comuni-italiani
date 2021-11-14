@@ -27,9 +27,11 @@ export default class RegionController {
             } : undefined
         };
 
+        const totalItems = await RegionService.count(where);
         const paginatedList: IPaginatedList<Region> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await RegionService.count(where) / pageSize),
+            totalPages: Math.ceil(totalItems / pageSize),
+            totalItems,
             contentList: await RegionService.list(currentPage, pageSize, where)
         };
 

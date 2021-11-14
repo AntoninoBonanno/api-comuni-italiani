@@ -6,6 +6,7 @@ import AreaService from "../services/area-service";
 import RegionService from "../services/region-service";
 import ProvinceService from "../services/province-service";
 import CityService from "../services/city-service";
+import {InternalServerErrorException} from "../exceptions/http-exceptions";
 
 export default class RootController {
 
@@ -26,6 +27,16 @@ export default class RootController {
             }
         }
 
+        if (
+            message.currentDatabase === IstatScraper.messages.databaseEmpty &&
+            message.availableDatabase !== IstatScraper.messages.errorIstat
+        ) {
+            IstatScraper.startScan().catch(e => {
+                throw new InternalServerErrorException(e.stack);
+            });
+            message.currentDatabase = message.availableDatabase;
+            message.lastCheck = IstatScraper.messages.progress;
+        }
         res.send(message);
     }
 }

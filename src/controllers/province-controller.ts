@@ -30,9 +30,11 @@ export default class ProvinceController {
             } : undefined
         };
 
+        const totalItems = await ProvinceService.count(where);
         const paginatedList: IPaginatedList<Province> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await ProvinceService.count(where) / pageSize),
+            totalPages: Math.ceil(totalItems / pageSize),
+            totalItems,
             contentList: await ProvinceService.list(currentPage, pageSize, where)
         };
 

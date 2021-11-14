@@ -32,9 +32,11 @@ export default class CityController {
             } : undefined
         };
 
+        const totalItems = await CityService.count(where);
         const paginatedList: IPaginatedList<City> = {
             pageSize, currentPage,
-            totalPages: Math.ceil(await CityService.count(where) / pageSize),
+            totalPages: Math.ceil(totalItems / pageSize),
+            totalItems,
             contentList: await CityService.list(currentPage, pageSize, where)
         };
 
