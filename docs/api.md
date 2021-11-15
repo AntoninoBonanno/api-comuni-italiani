@@ -503,7 +503,7 @@ Get the paginated list of Cities
 | `code` | `string` | **Optional**. Filter by city code |
 | `cadastralCode` | `string` | **Optional**. Filter by city cadastralCode |
 | `capital` | `boolean` | **Optional**. Filter by city capital: accept `true`, `1`, `false`, `0` |
-| `province` | `string` | **Optional**. Filter by region of province: accept `province id`, `province name`, `province abbreviation` |
+| `province` | `string` | **Optional**. Filter by province of city: accept `province id`, `province name`, `province abbreviation` |
 
 <details>
 <summary style="font-size:14px; font-weight: bold;">Example</summary>
