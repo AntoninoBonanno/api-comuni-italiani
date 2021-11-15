@@ -12,7 +12,7 @@ WORKDIR /usr/app
 
 ENV APP_PORT=8000
 # Optimise for production
-ENV NODE_ENV production
+ENV NODE_ENV=production
 
 # Copy app files
 COPY --from=builder /usr/app/package.json .

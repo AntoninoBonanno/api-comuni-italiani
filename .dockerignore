@@ -2,8 +2,8 @@
 **
 
 # Allow files and directories
-!/docker/scripts
-!/prisma
-!/src/**
+!/docker/scripts/
+!/prisma/
+!/src/
 !/package.json
 !/tsconfig.json
