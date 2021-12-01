@@ -1,5 +1,15 @@
 # API Comuni italiani
 
+[![Test](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/docker-hub.yml/badge.svg)](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/docker-hub.yml)
+[![Test](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/codeql-analysis.yml)
+
+[![GitHub release](https://img.shields.io/github/v/release/AntoninoBonanno/api-comuni-italiani)](https://github.com/AntoninoBonanno/api-comuni-italiani/releases)
+[![Docker Image Size(latest by date)](https://img.shields.io/docker/image-size/antoninobonanno/api-comuni-italiani)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani "Click to view the image on Docker Hub")
+[![Docker stars](https://img.shields.io/docker/stars/antoninobonanno/api-comuni-italiani.svg)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani 'DockerHub')
+[![Docker pulls](https://img.shields.io/docker/pulls/antoninobonanno/api-comuni-italiani.svg)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani 'DockerHub')
+
+
+
 Unofficial API service, which returns information on Italian **areas**, **regions**, **provinces** and **cities**.
 
 Service realized with Node.js server based on the Express framework and on the MySQL database.
