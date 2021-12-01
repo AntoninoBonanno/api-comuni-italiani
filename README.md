@@ -1,5 +1,15 @@
 # API Comuni italiani
 
+[![Test](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/docker-hub.yml/badge.svg)](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/docker-hub.yml)
+[![Test](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/AntoninoBonanno/api-comuni-italiani/actions/workflows/codeql-analysis.yml)
+
+[![GitHub release](https://img.shields.io/github/v/release/AntoninoBonanno/api-comuni-italiani)](https://github.com/AntoninoBonanno/api-comuni-italiani/releases)
+[![Docker Image Size(latest by date)](https://img.shields.io/docker/image-size/antoninobonanno/api-comuni-italiani)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani "Click to view the image on Docker Hub")
+[![Docker stars](https://img.shields.io/docker/stars/antoninobonanno/api-comuni-italiani.svg)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani 'DockerHub')
+[![Docker pulls](https://img.shields.io/docker/pulls/antoninobonanno/api-comuni-italiani.svg)](https://hub.docker.com/r/antoninobonanno/api-comuni-italiani 'DockerHub')
+
+
+
 Unofficial API service, which returns information on Italian **areas**, **regions**, **provinces** and **cities**.
 
 Service realized with Node.js server based on the Express framework and on the MySQL database.
@@ -21,12 +31,12 @@ Service realized with Node.js server based on the Express framework and on the M
 Starting an "API Comuni italiani" instance is simple:
 
 ```
-docker run -p 8000:8000 -e DATABASE_URL="database-connection-string" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani:latest
+docker run -p 8000:8000 -e ="mysql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani:latest
 ```
 
-NOTE:
-- The `database-connection-string` must be of the format `mysql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}`
-  - For example `mysql://root:@host.docker.internal:3306/comuni-italiani` (use `host.docker.internal` instead of `localhost` as `DB_HOST` if you have a local database, not in a docker container)
+Example: `DATABASE_URL=mysql://root:@host.docker.internal:3306/comuni-italiani`
+
+NOTE: use `host.docker.internal` instead of `localhost` as `DB_HOST` if you have a local database (not in a docker container)
 
 #### use docker-compose
 

@@ -33,6 +33,6 @@ app.listen(environment.port, async (): Promise<void> => {
     const ip = environment.isProduction() ?
         Object.values(networkInterfaces()).flat().find(details => details && details.family == 'IPv4' && !details.internal)?.address
         : 'localhost';
-    Logger.info(`⚡ ${environment.appName} Server Running here -> http://${ip ?? hostname()}:${environment.port}`);
+    Logger.info(`⚡ ${environment.appName} Server Running here -> ${ip ?? hostname()}:${environment.port}`);
     IstatScraper.initCronJob();
 });
