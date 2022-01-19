@@ -3,6 +3,7 @@ import axios from "axios";
 import {CronJob} from "cron";
 import Logger from "./logger";
 import * as XLSX from "xlsx";
+import * as https from "https";
 import environment from "../environment";
 import {ScanStatus} from "@prisma/client";
 import AreaService from "../services/area-service";
@@ -38,22 +39,30 @@ export default class IstatScraper {
     }
 
     /**
-     * Check if there are any updates, or the database is already up to date
-     * @param istatFile the cached istat file, if undefined retrieve new file and and is then deleted
+     * Check if there are any updates, or the database is already up-to-date
+     * @param istatFile the cached istat file, if undefined retrieve new file and is then deleted
      */
     static async checkUpToDate(istatFile?: IIstatFile): Promise<IUpdateInfo> {
         if (!istatFile) {
-            istatFile = await this.getIstatFile().then(istatFile => {
-                this.deleteIstatFile(istatFile); // Delete stored file
-                return istatFile;
-            }).catch(_ => undefined);
+            istatFile = await this.getIstatFile().then(file => {
+                this.deleteIstatFile(file); // Delete stored file
+                return file;
+            }).catch(e => {
+                Logger.error(e);
+                return undefined
+            });
         }
 
         const lastScan = await IstatScanService.lastValidScan().catch(_ => undefined); // COMPLETED || PROGRESS
+        let lastCheck = this.messages.neverScan;
+        if (lastScan) {
+            lastCheck = (lastScan.status === ScanStatus.PROGRESS ? this.messages.progress : lastScan.startAt.toISOString());
+        }
+
         return {
             availableDatabase: istatFile?.databaseName ?? this.messages.errorIstat,
             currentDatabase: lastScan?.databaseName ?? this.messages.databaseEmpty,
-            lastCheck: lastScan ? (lastScan.status === ScanStatus.PROGRESS ? this.messages.progress : lastScan.startAt.toISOString()) : this.messages.neverScan,
+            lastCheck,
             nextCheck: this.job ? this.job.nextDates().toISOString() : this.messages.cronUnset,
             isUpdated: (istatFile && lastScan) ? lastScan.databaseName === istatFile.databaseName : false
         };
@@ -203,7 +212,8 @@ export default class IstatScraper {
             responseType: 'arraybuffer',
             headers: {
                 'Content-Type': 'blob',
-            }
+            },
+            httpsAgent: new https.Agent({rejectUnauthorized: false})
         }).catch(e => {
             throw new InternalServerErrorException(`[IstatScraper] Error in retrieving the file: ${e.stack}`);
         });

@@ -31,9 +31,9 @@ export default class AreaController {
     }
 
     /**
-     * Find a Area resource by id
+     * Find an Area resource by id
      * @param req the validated onlyIdParam request
-     * @param res the response as a Area
+     * @param res the response as an Area
      */
     static async findById(req: Request, res: Response): Promise<void> {
         const {id} = req.params;

@@ -28,8 +28,9 @@ export default class RootController {
         }
 
         if (
-            message.currentDatabase === IstatScraper.messages.databaseEmpty &&
-            message.availableDatabase !== IstatScraper.messages.errorIstat
+            message.availableDatabase !== IstatScraper.messages.errorIstat &&
+            (message.currentDatabase === IstatScraper.messages.databaseEmpty ||
+                message.currentDatabase !== message.availableDatabase)
         ) {
             IstatScraper.startScan().catch(e => {
                 throw new InternalServerErrorException(e.stack);
