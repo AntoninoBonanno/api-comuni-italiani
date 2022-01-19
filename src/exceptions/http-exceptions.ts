@@ -86,7 +86,7 @@ export class NotFoundException extends HttpException {
 }
 
 /**
- * 500 Internal Server Error server error response code
+ * 500 Internal Server Error response code
  * indicates that the server encountered an unexpected condition that
  * prevented it from fulfilling the request.
  */

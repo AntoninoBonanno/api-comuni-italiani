@@ -40,7 +40,7 @@ const fileConfig = {
 
 // Define which transports the logger must use to print out messages.
 const transports = [
-    // Allow the use the console to print the colorize messages
+    // Allow the use the console to print to colorize messages
     new winston.transports.Console({
         format: winston.format.combine(
             format,

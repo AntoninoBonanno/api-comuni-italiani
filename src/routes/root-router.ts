@@ -21,7 +21,7 @@ const rootRouter = express.Router();
 rootRouter.get('/', wrap(RootController.info));
 rootRouter.use('/api', apiRouter);
 
-rootRouter.get('*', (req: Request) => {
+rootRouter.all('*', (req: Request) => {
     throw new NotFoundException(`Cannot ${req.method} ${req.path}`, false);
 });
 

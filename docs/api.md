@@ -15,7 +15,9 @@ Import [API Comuni italiani.postman_collection.json](/docs/API%20Comuni%20italia
 ```http
 GET /
  ```
-**IMPORTANT**: the **first ISTAT scan** (when the database is empty) is started when the **Info API** is fired for the first time
+**IMPORTANT**: 
+- the **first ISTAT scan** (when the database is empty) is started when the **Info API** is fired for the first time
+- if `currentDatabase` is different from `availableDatabase` a new scan is started
 
 Get system info:
 

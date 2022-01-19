@@ -5,6 +5,7 @@ import CityController from "../../controllers/city-controller";
 import CityValidation from "../../validations/city-validation";
 
 const cityRouter = express.Router();
+
 cityRouter.get(
     '/',
     CityValidation.list,
