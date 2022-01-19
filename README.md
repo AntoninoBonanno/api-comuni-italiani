@@ -31,7 +31,7 @@ Service realized with Node.js server based on the Express framework and on the M
 Starting an "API Comuni italiani" instance is simple:
 
 ```
-docker run -p 8000:8000 -e ="mysql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani:latest
+docker run -p 8000:8000 -e DATABASE_URL="mysql://${DB_USERNAME}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_DATABASE}" --name api-comuni-italiani -d antoninobonanno/api-comuni-italiani:latest
 ```
 
 Example: `DATABASE_URL=mysql://root:@host.docker.internal:3306/comuni-italiani`
