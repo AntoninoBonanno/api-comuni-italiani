@@ -67,7 +67,7 @@ docker-compose -f docker/docker-compose.yml -p api-comuni-italiani up -d
 
 ### TODO
 
-- [ ] Bug cron, helpers/istat-scraper.ts line 34: [Issue opened](https://github.com/kelektiv/node-cron/issues/587)
+- [ ] Bug cron, helpers/istat-scraper.ts line 35: [Issue opened](https://github.com/Hexagon/croner/issues/52)
 
 ## Support me
 

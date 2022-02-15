@@ -1,6 +1,6 @@
 import fs from "fs";
 import axios from "axios";
-import {CronJob} from "cron";
+import Cron from "croner";
 import Logger from "./logger";
 import * as XLSX from "xlsx";
 import * as https from "https";
@@ -25,17 +25,17 @@ export default class IstatScraper {
         cronUnset: 'CronJob unset'
     };
 
-    private static job: CronJob | undefined;
+    private static job: Cron | undefined;
     private static storageDir: string = `${environment.storagePath}/istat_files/`;
 
     /**
      * Add cronjob, started every first day of month at 10:00
      */
     static initCronJob(): void {
-        this.job = new CronJob(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, () => {
+        this.job = new Cron(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, {timezone: "Europe/Rome"}, () => {
             fs.rmSync(this.storageDir, {recursive: true, force: true}); // clear storage dir
             this.startScan().catch(error => Logger.error(`[CronJob] ${error.stack}`));
-        }, null, true);
+        });
     }
 
     /**
@@ -48,8 +48,8 @@ export default class IstatScraper {
                 this.deleteIstatFile(file); // Delete stored file
                 return file;
             }).catch(e => {
-                Logger.error(e);
-                return undefined
+                Logger.error(e.message);
+                return undefined;
             });
         }
 
@@ -63,7 +63,7 @@ export default class IstatScraper {
             availableDatabase: istatFile?.databaseName ?? this.messages.errorIstat,
             currentDatabase: lastScan?.databaseName ?? this.messages.databaseEmpty,
             lastCheck,
-            nextCheck: this.job ? this.job.nextDates().toISOString() : this.messages.cronUnset,
+            nextCheck: this.job && this.job.next() !== null ? this.job.next()!.toISOString() : this.messages.cronUnset,
             isUpdated: (istatFile && lastScan) ? lastScan.databaseName === istatFile.databaseName : false
         };
     }
