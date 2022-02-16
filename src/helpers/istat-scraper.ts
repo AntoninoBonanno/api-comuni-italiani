@@ -32,9 +32,13 @@ export default class IstatScraper {
      * Add cronjob, started every first day of month at 10:00
      */
     static initCronJob(): void {
-        this.job = new Cron(`0 10 1 */${environment.istatScanMonthlyPeriod()} *`, {timezone: "Europe/Rome"}, () => {
+        this.job = new Cron(`0 10 1 * *`, {timezone: "Europe/Rome"}, () => {
             fs.rmSync(this.storageDir, {recursive: true, force: true}); // clear storage dir
-            this.startScan().catch(error => Logger.error(`[CronJob] ${error.stack}`));
+            IstatScanService.lastValidScan().then(lastScan => {
+                if (!lastScan || (lastScan.status !== ScanStatus.PROGRESS && this.monthDiff(lastScan.startAt, new Date()) >= environment.istatScanMonthlyPeriod())) {
+                    this.startScan().catch(error => Logger.error(`[CronJob] ${error.stack}`));
+                }
+            }).catch(error => Logger.error(`[CronJob] ${error.stack}`));
         });
     }
 
@@ -54,16 +58,20 @@ export default class IstatScraper {
         }
 
         const lastScan = await IstatScanService.lastValidScan().catch(_ => undefined); // COMPLETED || PROGRESS
-        let lastCheck = this.messages.neverScan;
+        let lastCheck = this.messages.neverScan, nextCheck = this.messages.cronUnset;
         if (lastScan) {
             lastCheck = (lastScan.status === ScanStatus.PROGRESS ? this.messages.progress : lastScan.startAt.toISOString());
+            if (this.job && this.job.next() !== null) {
+                const nextDate = this.job.next()!;
+                nextDate.setMonth(lastScan.startAt.getMonth() + environment.istatScanMonthlyPeriod());
+                nextCheck = nextDate.toISOString();
+            }
         }
 
         return {
             availableDatabase: istatFile?.databaseName ?? this.messages.errorIstat,
             currentDatabase: lastScan?.databaseName ?? this.messages.databaseEmpty,
-            lastCheck,
-            nextCheck: this.job && this.job.next() !== null ? this.job.next()!.toISOString() : this.messages.cronUnset,
+            lastCheck, nextCheck,
             isUpdated: (istatFile && lastScan) ? lastScan.databaseName === istatFile.databaseName : false
         };
     }
@@ -170,6 +178,15 @@ export default class IstatScraper {
         } finally {
             this.deleteIstatFile(istatFile);
         }
+    }
+
+    /**
+     * Calculate the difference in months between two dates
+     * @param d1 Date 1
+     * @param d2 Date 2
+     */
+    private static monthDiff(d1: Date, d2: Date): number {
+        return d2.getMonth() - d1.getMonth() + (12 * (d2.getFullYear() - d1.getFullYear()));
     }
 
     /**

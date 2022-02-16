@@ -65,10 +65,6 @@ docker-compose -f docker/docker-compose.yml -p api-comuni-italiani up -d
    already exists
 4. Run `npm start` or `npm run dev` command to run local server (it restarts each time the code is changed)
 
-### TODO
-
-- [ ] Bug cron, helpers/istat-scraper.ts line 35: [Issue opened](https://github.com/Hexagon/croner/issues/52)
-
 ## Support me
 
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/C0C46QJ0M)
